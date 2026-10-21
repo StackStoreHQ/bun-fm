@@ -1,6 +1,6 @@
 import TelegramBot, { Message } from "node-telegram-bot-api";
 import path from "path";
-import { envSettings } from "../settings/env";
+import { configSettings } from "../settings/config";
 import { mediaModule } from "./media";
 import { loggerModule } from "./logger";
 import fs from "fs";
@@ -14,7 +14,9 @@ class BotModule {
   bot: TelegramBot;
 
   constructor() {
-    this.bot = new TelegramBot(envSettings.botToken, { polling: true });
+    this.bot = new TelegramBot(configSettings.telegram.botToken, {
+      polling: true,
+    });
     this.bot
       .setMyCommands(Object.values(botSettings.commands))
       .catch(loggerModule.error);
@@ -83,7 +85,8 @@ class BotModule {
         text += metadataSettings.description + "\n\n";
         text += `Version：v${metadataSettings.version}\n`;
         text += `Uptime：${fmModule.getRunningTime()}\n\n`;
-        text += `Live Stream：${envSettings.getDomain()}\n\n`;
+        text += `Listen：${configSettings.getDomain()}\n`;
+        text += `Live Stream：${configSettings.getDomain().replace(/\/$/, "")}/stream\n\n`;
         text += `Commands：\n`;
         text += Object.values(botSettings.commands)
           .map((item) => {
@@ -220,9 +223,12 @@ class BotModule {
         }
         const tmpFilePath = await this.bot.downloadFile(
           fileId,
-          envSettings.tmpDir,
+          configSettings.storage.tmpDir,
         );
-        const mediaFilePath = path.resolve(envSettings.mediaDir, fileName);
+        const mediaFilePath = path.resolve(
+          configSettings.storage.mediaDir,
+          fileName,
+        );
         await fs.promises.rename(tmpFilePath, mediaFilePath);
 
         await this.bot.editMessageText(`✅ File stored: ${fileName}`, {

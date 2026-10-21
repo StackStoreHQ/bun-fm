@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Listen live on BunFM." />
+    <title>BunFM — Live radio</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/player.css" />
+    <script src="/player.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to player</a>
+    <div class="atmosphere" aria-hidden="true">
+      <img id="background-cover" src="/icon.jpg" alt="" />
+    </div>
+    <div class="shell">
+
+      <main id="main" tabindex="-1">
+        <div class="station">
+          <h1 id="site-title">BunFM</h1>
+          <p id="site-description">A place to listen. Live, together.</p>
+        </div>
+
+        <section class="listening-room" aria-labelledby="track-title">
+          <div class="artwork">
+            <img
+              id="cover"
+              src="/icon.jpg"
+              alt="BunFM station artwork"
+              width="480"
+              height="480"
+              fetchpriority="high"
+            />
+          </div>
+          <div class="track-content">
+            <div class="track-details" aria-live="polite" aria-atomic="true">
+              <h2 id="track-title">Live radio</h2>
+              <p id="track-artist" class="artist">Waiting for the current track</p>
+              <p id="track-album" class="album" hidden></p>
+            </div>
+
+            <div class="playback">
+              <button
+                id="play-toggle"
+                class="play-toggle"
+                type="button"
+                aria-label="Play live stream"
+                aria-describedby="playback-status playback-hint"
+                disabled
+              >
+                <svg
+                  id="play-icon"
+                  viewBox="0 0 32 32"
+                  width="30"
+                  height="30"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M11 6.5 26 16 11 25.5Z" fill="currentColor" />
+                </svg>
+                <svg
+                  id="pause-icon"
+                  viewBox="0 0 32 32"
+                  width="30"
+                  height="30"
+                  aria-hidden="true"
+                  focusable="false"
+                  hidden
+                >
+                  <path d="M8 7h6v18H8zM19 7h6v18h-6z" fill="currentColor" />
+                </svg>
+              </button>
+              <div id="spectrum-area" class="spectrum-area">
+                <canvas
+                  id="spectrum"
+                  width="560"
+                  height="96"
+                  role="img"
+                  aria-label="Live audio frequency spectrum"
+                ></canvas>
+              </div>
+              <div class="visually-hidden" role="status" aria-atomic="true">
+                <p id="playback-status">Paused</p>
+                <p id="playback-hint" class="playback-hint">
+                  Press play to join the live stream
+                </p>
+              </div>
+            </div>
+
+            <p id="spectrum-note" class="visually-hidden" hidden></p>
+            <div class="notices">
+              <p id="playback-error" class="notice" role="status" hidden></p>
+              <p id="site-error" class="notice" role="status" hidden></p>
+              <p id="metadata-error" class="notice" role="status" hidden></p>
+              <noscript>
+                <p class="notice">
+                  Enable JavaScript to use the player. No audio plays automatically.
+                </p>
+              </noscript>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <a
+          id="github-link"
+          href="https://github.com/pxgo/bun-fm"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="BunFM on GitHub"
+        >
+          GitHub <span id="github-stars" aria-hidden="true"></span>
+        </a>
+      </footer>
+    </div>
+    <audio id="audio" preload="none" hidden></audio>
+  </body>
+</html>

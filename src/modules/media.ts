@@ -1,15 +1,15 @@
 import fs from "fs";
-import { envSettings } from "../settings/env";
+import { configSettings } from "../settings/config";
 import type { IMedia } from "../settings/media";
 import path from "path";
 
 class MediaModule {
   async getMediasInfo() {
     const medias: IMedia[] = [];
-    const filenames = await fs.promises.readdir(envSettings.mediaDir);
+    const filenames = await fs.promises.readdir(configSettings.storage.mediaDir);
     for (let i = 0; i < filenames.length; i++) {
       const filename = filenames[i];
-      const filePath = path.resolve(envSettings.mediaDir, filename);
+      const filePath = path.resolve(configSettings.storage.mediaDir, filename);
       medias.push({
         order: i + 1,
         filename,

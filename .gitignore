@@ -5,3 +5,4 @@ tmp
 media
 dist
 .env
+config.yaml
