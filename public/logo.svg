@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 0 200 200" width="512" height="512" role="img" aria-labelledby="title">
+  <title id="title">BunFM round-bread radio</title>
+  <rect x="20" y="0" width="200" height="200" fill="#202620" />
+  <g fill="none" stroke="#f1d34f" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M43 120C43 78 77 47 120 47C163 47 197 78 197 120C197 153 169 170 120 170C71 170 43 153 43 120Z" stroke-width="7" />
+    <path d="M155 56L185 26" stroke-width="5" />
+    <rect x="76" y="86" width="89" height="16" rx="4" stroke-width="5" />
+    <path d="M91 90V97M108 90V97M132 89V99M150 90V97M73 116H117M71 128H119M76 140H114" stroke-width="4" />
+    <circle cx="150" cy="127" r="15" stroke-width="5" />
+    <path d="M150 127L156 121" stroke-width="4" />
+  </g>
+</svg>
