@@ -6,8 +6,20 @@ import { fmModule } from "./modules/fm";
 import { configSettings } from "./settings/config";
 import { metadataSettings } from "./settings/metadata";
 import { nowPlayingModule } from "./modules/now-playing";
+import { statsModule } from "./modules/stats";
 
 const app = express();
+
+app.use((req, _res, next) => {
+  const isPage = req.method === "GET" &&
+    (req.path === "/" || req.path === "/index.html");
+  const destination = req.get("sec-fetch-dest");
+  if (!isPage || (destination && destination !== "document")) {
+    next();
+    return;
+  }
+  statsModule.recordVisit().then(next, next);
+});
 
 app.use(express.static("public"));
 
@@ -19,6 +31,11 @@ app.get("/api/site", (_req, res) => {
 app.get("/api/now-playing", (_req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.json({ track: nowPlayingModule.track, muted: fmModule.muted });
+});
+
+app.get("/api/stats", (_req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.json(statsModule.getSnapshot(metadataSettings.version));
 });
 
 app.get("/api/cover/:id", (req, res) => {
@@ -49,6 +66,7 @@ app.get("/stream", async (req, res) => {
     return;
   }
 
+  const stopListening = statsModule.startListening();
   res.write(fmModule.audioBufferCache);
 
   const onFMData = (buffer: Buffer) => {
@@ -61,12 +79,15 @@ app.get("/stream", async (req, res) => {
     }
   };
   fmModule.on("fmData", onFMData);
-  res.socket?.on("close", () => {
+  let closed = false;
+  const onClose = () => {
+    if (closed) return;
+    closed = true;
     fmModule.off("fmData", onFMData);
-  });
-  req.socket.on("close", () => {
-    fmModule.off("fmData", onFMData);
-  });
+    stopListening();
+  };
+  res.socket?.once("close", onClose);
+  req.socket.once("close", onClose);
 });
 
 app.listen(

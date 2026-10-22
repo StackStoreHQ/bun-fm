@@ -2,10 +2,11 @@
 
 // Bump this version whenever a cached player asset changes.
 const CACHE_PREFIX = "bunfm-shell-";
-const CACHE_NAME = CACHE_PREFIX + "v2";
+const CACHE_NAME = CACHE_PREFIX + "v9";
 const SHELL_ASSETS = [
   "/",
   "/player.css",
+  "/fonts/space-grotesk-latin.woff2",
   "/player.js",
   "/pwa.js",
   "/manifest.webmanifest",

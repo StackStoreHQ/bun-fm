@@ -17,9 +17,11 @@
   let muted = false;
   let wanted = false;
   let phase = "paused";
-  let playbackError = "";
   let attempt = 0;
   let connectionTimer = 0;
+  let progressTimer = 0;
+  let retryTimer = 0;
+  let retryCount = 0;
   let removeAudioListeners = () => {};
   let graph = null;
   let spectrumUnavailable = false;
@@ -28,6 +30,9 @@
   let leaving = false;
   let siteTimer = 0;
   let metadataTimer = 0;
+  let statsTimer = 0;
+  let shareTimer = 0;
+  let shareTrigger = null;
   const requests = new Set();
 
   try {
@@ -59,6 +64,80 @@
   }
 
 
+  function shareData() {
+    const title = site && site.title || "BunFM";
+    return {
+      title,
+      text: "I'm listening to " + title + ". Tune in with me.",
+      url: new URL("/", window.location.origin).href,
+    };
+  }
+
+  function renderShareLinks() {
+    const data = shareData();
+    const url = new URL("https://twitter.com/intent/tweet");
+    url.searchParams.set("text", data.text);
+    url.searchParams.set("url", data.url);
+    get("share-x").href = url.href;
+    get("share-actions").hidden = false;
+  }
+
+  function shareStatus(message) {
+    window.clearTimeout(shareTimer);
+    get("share-status").textContent = message;
+    if (message) {
+      shareTimer = window.setTimeout(() => {
+        get("share-status").textContent = "";
+      }, 5000);
+    }
+  }
+
+  function closeShareFallback() {
+    get("share-fallback").hidden = true;
+    if (shareTrigger) shareTrigger.focus();
+  }
+
+  function showShareFallback(trigger) {
+    shareTrigger = trigger;
+    get("share-url").value = shareData().url;
+    get("share-fallback").hidden = false;
+    get("share-url").focus();
+    get("share-url").select();
+  }
+
+  async function copyShareLink(trigger) {
+    get("share-fallback").hidden = true;
+    shareStatus("");
+    try {
+      await navigator.clipboard.writeText(shareData().url);
+      shareStatus("Link copied");
+    } catch {
+      showShareFallback(trigger);
+    }
+  }
+
+  async function shareMore() {
+    const trigger = get("share-more");
+    get("share-fallback").hidden = true;
+    shareStatus("");
+    const data = shareData();
+    trigger.disabled = true;
+    try {
+      if (!navigator.share ||
+          (navigator.canShare && !navigator.canShare(data))) {
+        await copyShareLink(trigger);
+        return;
+      }
+      await navigator.share(data);
+    } catch (error) {
+      if (!error || error.name !== "AbortError") {
+        showShareFallback(trigger);
+      }
+    } finally {
+      trigger.disabled = false;
+    }
+  }
+
   function renderText(id, text) {
     const element = get(id);
     element.textContent = text;
@@ -69,8 +148,10 @@
     button.disabled = !site;
     button.setAttribute("aria-label", wanted ?
       "Pause live stream" : "Play live stream");
-    get("play-icon").toggleAttribute("hidden", wanted);
-    get("pause-icon").toggleAttribute("hidden", !wanted);
+    const loading = !site || (wanted && phase !== "playing");
+    get("play-icon").toggleAttribute("hidden", loading || wanted);
+    get("pause-icon").toggleAttribute("hidden", loading || !wanted);
+    get("loading-icon").toggleAttribute("hidden", !loading);
     document.body.dataset.playing = String(phase === "playing");
     let status = "Paused";
     let hint = "Press play to join the live stream";
@@ -87,13 +168,13 @@
       status = muted ? "Station muted" : "Listening live";
       hint = muted ? "Connected. Waiting for the station to unmute." :
         "You’re tuned in to the live stream";
-    } else if (phase === "error") {
-      status = "Unable to play";
-      hint = playbackError + " Press play to retry.";
+    } else if (phase === "retrying") {
+      status = "Reconnecting…";
+      hint = "Retrying automatically. You can pause at any time.";
     }
     get("playback-status").textContent = status;
     get("playback-hint").textContent = hint;
-    renderText("playback-error", phase === "error" ? hint : "");
+
   }
 
   function renderCover(track) {
@@ -180,6 +261,60 @@
       typeof data.spectrumEnabled === "boolean" && data.streamUrl === "/stream";
   }
 
+  function validStats(data) {
+    return data && typeof data.version === "string" && data.version &&
+      ["uptimeSeconds", "visits", "listens", "online"]
+        .every((key) => Number.isSafeInteger(data[key]) && data[key] >= 0);
+  }
+
+  function formatUptime(seconds) {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (days) return `Up ${days}d ${hours}h`;
+    if (hours) return `Up ${hours}h ${minutes}m`;
+    if (minutes) return `Up ${minutes}m`;
+    return `Up ${seconds}s`;
+  }
+
+  function renderStats(data) {
+    const compact = new Intl.NumberFormat("en", {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    });
+    const exact = new Intl.NumberFormat("en");
+    get("app-version").textContent = data.version;
+    get("project-link").setAttribute(
+      "aria-label",
+      `GoFM version ${data.version} on GitHub`,
+    );
+    get("service-uptime").textContent = formatUptime(data.uptimeSeconds);
+    get("service-uptime").title =
+      `Service uptime: ${exact.format(data.uptimeSeconds)} seconds`;
+    get("service-visits").textContent = `Visits ${compact.format(data.visits)}`;
+    get("service-visits").title =
+      `${exact.format(data.visits)} player page views since the first visit`;
+    get("service-listens").textContent = `Listens ${compact.format(data.listens)}`;
+    get("service-listens").title =
+      `${exact.format(data.listens)} live stream connections since the first visit`;
+    get("service-online").textContent = `Online ${compact.format(data.online)}`;
+    get("service-online").title =
+      `${exact.format(data.online)} active live stream connections`;
+  }
+
+  async function pollStats() {
+    try {
+      const data = await fetchJson("/api/stats");
+      if (!validStats(data)) throw new Error("Invalid service statistics");
+      if (leaving) return;
+      renderStats(data);
+    } catch {
+      // Keep the last available values and retry while the player is open.
+    } finally {
+      if (!leaving) statsTimer = window.setTimeout(pollStats, 5000);
+    }
+  }
+
   async function loadSite() {
     try {
       const data = await fetchJson("/api/site");
@@ -193,15 +328,13 @@
 
       get("site-title").textContent = title;
       renderText("site-description", site.description);
+      renderShareLinks();
 
-
-      renderText("site-error", "");
       renderCover(latestMetadata && latestMetadata.track);
       renderPlayback();
     } catch {
       if (leaving) return;
-      renderText("site-error",
-        "Station settings could not be loaded. Retrying automatically.");
+
       siteTimer = window.setTimeout(loadSite, 10000);
     }
   }
@@ -218,12 +351,10 @@
       }
       if (leaving) return;
       renderMetadata(data);
-      renderText("metadata-error", "");
+
     } catch {
       if (leaving) return;
-      renderText("metadata-error", latestMetadata ?
-        "Track information may be out of date. Retrying automatically." :
-        "Track information is unavailable. Retrying automatically.");
+
     } finally {
       if (!leaving) metadataTimer = window.setTimeout(pollMetadata, 3000);
     }
@@ -297,6 +428,8 @@
     removeAudioListeners = () => {};
     window.clearTimeout(connectionTimer);
     connectionTimer = 0;
+    window.clearInterval(progressTimer);
+    progressTimer = 0;
     audio.pause();
     audio.removeAttribute("src");
     audio.load();
@@ -333,7 +466,7 @@
       return;
     }
     const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!window.isSecureContext || !AudioContext || !painter) {
+    if (!AudioContext || !painter) {
       disableSpectrum("Spectrum unavailable in this browser. Audio can still play.");
       return;
     }
@@ -358,7 +491,8 @@
             bins: new Uint8Array(analyser.frequencyBinCount) };
           context.onstatechange = () => {
             if (graph && graph.context === context) {
-              if (wanted && graph.source && context.state !== "running") {
+              if (context.state === "closed" ||
+                  (wanted && context.state !== "running")) {
                 disableSpectrum("Spectrum interrupted. Using standard audio playback.");
               } else {
                 updateDrawing();
@@ -405,11 +539,13 @@
     }
   }
 
-  function pausePlayback(error = "") {
+  function pausePlayback() {
     wanted = false;
     ++attempt;
-    phase = error ? "error" : "paused";
-    playbackError = error;
+    window.clearTimeout(retryTimer);
+    retryTimer = 0;
+    retryCount = 0;
+    phase = "paused";
     stopDrawing();
     releaseAudio();
     if (graph) {
@@ -418,30 +554,37 @@
     renderPlayback();
   }
 
-  function mediaError(element) {
-    switch (element.error && element.error.code) {
-      case 2: return "A network error interrupted the stream.";
-      case 3: return "Your browser could not decode the audio.";
-      case 4: return "The stream is unavailable or its format is unsupported.";
-      default: return "The audio stream was interrupted.";
-    }
+  function retryPlayback() {
+    if (!wanted || leaving || retryTimer) return;
+    ++attempt;
+    releaseAudio();
+    stopDrawing();
+    phase = "retrying";
+    renderPlayback();
+    const delay = Math.min(1000 * 2 ** Math.min(retryCount++, 4), 15000);
+    retryTimer = window.setTimeout(() => {
+      retryTimer = 0;
+      if (wanted && !leaving) startPlayback();
+    }, delay);
   }
 
   function startPlayback() {
     if (!site || leaving) return;
     const token = ++attempt;
+    window.clearTimeout(retryTimer);
+    retryTimer = 0;
+    releaseAudio();
     const element = audio;
     wanted = true;
     phase = "connecting";
-    playbackError = "";
     renderPlayback();
     const current = () => token === attempt && wanted && element === audio;
-    const fail = (message) => { if (current()) pausePlayback(message); };
+    const fail = () => { if (current()) retryPlayback(); };
     const armTimeout = () => {
       if (connectionTimer) return;
       connectionTimer = window.setTimeout(() => {
         connectionTimer = 0;
-        fail("The stream took too long to respond. Check your connection.");
+        fail();
       }, 15000);
     };
     const playing = () => {
@@ -459,16 +602,28 @@
       stopDrawing();
       armTimeout();
     };
-    const error = () => {
-      if (element.error) fail(mediaError(element));
-    };
-    const ended = () => fail("The live stream has ended.");
+    const error = fail;
+    const ended = fail;
     const pause = () => {
       // play() clears paused synchronously, so queued load() events are ignored.
       // A genuine native pause must also release a connecting/buffering stream.
-      if (current() && element.paused) pausePlayback();
+      if (current() && element.paused) fail();
     };
-    const events = { playing, waiting, stalled: waiting, error, ended, pause };
+    let lastTime = element.currentTime;
+    let lastProgress = Date.now();
+    const checkProgress = () => {
+      if (!current()) return;
+      if (!element.paused && element.currentTime > lastTime) {
+        lastTime = element.currentTime;
+        lastProgress = Date.now();
+        retryCount = 0;
+        if (phase !== "playing") playing();
+      } else if (Date.now() - lastProgress >= 15000) {
+        fail();
+      }
+    };
+    const events = { playing, waiting, stalled: waiting, error, ended, pause,
+      timeupdate: checkProgress };
     for (const [name, handler] of Object.entries(events)) {
       element.addEventListener(name, handler);
     }
@@ -478,27 +633,52 @@
       }
     };
     armTimeout();
+    progressTimer = window.setInterval(checkProgress, 1000);
     try {
       element.src = site.streamUrl + "?live=" + Date.now() + "-" + token;
       element.load();
       prepareSpectrum(token);
       // Graph setup can fall back to a new element. Do not play the old one.
       if (!current()) return;
-      Promise.resolve(element.play()).catch((reason) => {
-        fail(reason && reason.name === "NotAllowedError" ?
-          "Your browser blocked playback. Select play to allow audio." :
-          "Playback could not start in your browser.");
-      });
+      Promise.resolve(element.play()).catch(fail);
     } catch {
-      fail("Playback is not supported in this browser.");
+      fail();
     }
   }
+
+  get("share-copy").addEventListener("click", (event) => {
+    copyShareLink(event.currentTarget);
+  });
+  get("share-more").addEventListener("click", shareMore);
+  get("share-close").addEventListener("click", closeShareFallback);
+  get("share-fallback").addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeShareFallback();
+    }
+  });
+  get("share-url").addEventListener("click", (event) => {
+    event.currentTarget.select();
+  });
 
   button.addEventListener("click", () => {
     if (wanted) pausePlayback();
     else startPlayback();
   });
-  document.addEventListener("visibilitychange", updateDrawing);
+  window.addEventListener("online", () => {
+    if (wanted && phase !== "playing") startPlayback();
+  });
+  document.addEventListener("visibilitychange", () => {
+    updateDrawing();
+    if (!document.hidden && wanted && graph &&
+        graph.context.state !== "running") {
+      // Safari can interrupt Web Audio while the page is in the background.
+      // Keep the existing source and try to resume it when the page returns.
+      try {
+        Promise.resolve(graph.context.resume()).then(updateDrawing).catch(() => {});
+      } catch {}
+    }
+  });
   if (reducedMotion.addEventListener) {
     reducedMotion.addEventListener("change", updateDrawing);
   } else if (reducedMotion.addListener) {
@@ -508,6 +688,8 @@
     leaving = true;
     window.clearTimeout(siteTimer);
     window.clearTimeout(metadataTimer);
+    window.clearTimeout(statsTimer);
+    window.clearTimeout(shareTimer);
     for (const request of requests) request.abort();
     pausePlayback();
   });
@@ -516,11 +698,14 @@
     leaving = false;
     if (!site) loadSite();
     pollMetadata();
+    pollStats();
   });
 
 
+  renderShareLinks();
   renderPlayback();
   renderCover(null);
   loadSite();
   pollMetadata();
+  pollStats();
 })();

@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "description": "A real-time audio streaming service built with NodeJS.",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev": "nodemon --ignore data/ --exec ts-node src/index.ts",
     "start": "NODE_ENV=production node dist/index.js",
     "start-ts": "ts-node src/index.ts",
     "doctor": "ts-node src/doctor.ts",

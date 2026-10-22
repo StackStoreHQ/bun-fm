@@ -6,3 +6,4 @@ media
 dist
 .env
 config.yaml
+data/stats.json*
