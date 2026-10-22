@@ -25,7 +25,7 @@ Requires **Node.js 20+** and **FFmpeg / ffprobe** on `PATH`. Bun and a Telegram
 bot token are not required for the radio stream.
 
 ```sh
-git clone https://github.com/pxgo/bun-fm.git
+git clone https://github.com/StackStoreHQ/bun-fm.git
 cd bun-fm
 npm install
 ```
