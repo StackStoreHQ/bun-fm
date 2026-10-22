@@ -3,7 +3,7 @@
 A self-hosted radio station. One continuous broadcast, a minimal web player,
 and optional Telegram controls and AI host transitions.
 
-![BunFM widescreen player with track artwork, live spectrum and station statistics](docs/images/player.jpg)
+![BunFM player with track artwork, live spectrum and station statistics](docs/images/player-672x400.png)
 
 ## Features
 

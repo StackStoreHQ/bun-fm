@@ -12,10 +12,10 @@
     "doctor": "ts-node src/doctor.ts",
     "build": "tsc"
   },
-  "homepage": "https://github.com/pxgo/bun-fm",
+  "homepage": "https://github.com/StackStoreHQ/bun-fm",
   "author": {
     "url": "https://github.com/pxgo",
-    "name": "Xigui Peng"
+    "name": "Wes Peng"
   },
   "dependencies": {
     "dayjs": "^1.11.13",

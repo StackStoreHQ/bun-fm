@@ -5,6 +5,9 @@ changes.
 
 ## What this project is
 
+The repository has moved to `https://github.com/StackStoreHQ/bun-fm`.
+Use this URL for project links; `pxgo/bun-fm` is the old location.
+
 **BunFM** (`package.json` name `bun-fm`, nickname `BunFM`) is a single-process,
 real-time audio streaming server. It continuously transcodes a directory of
 audio files with `ffmpeg` and streams the resulting MP3 over plain HTTP to an
