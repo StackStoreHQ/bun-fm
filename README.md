@@ -17,6 +17,7 @@
 - ⏭️ **Queue Management**: Skip/remove tracks, shuffle mode
 - 🔄 **Transcoding**: Universal format support via FFmpeg
 - 🎙️ **AI Radio Host**: Prefetched spoken transitions with ducked music overlap
+- 📱 **PWA**: Installable player with an offline page shell
 
 ## Installation 🛠️
 
@@ -176,17 +177,11 @@ limited to two lines. Portrait phones omit the album name; short screens also
 omit the station introduction. All other page controls and layout behavior
 remain unchanged.
 
-The footer is fixed, not customizable: it links to
-https://github.com/pxgo/bun-fm and displays that repository's star count.
-The browser directly sends an unauthenticated
-`GET https://api.github.com/repos/pxgo/bun-fm` and reads `stargazers_count`.
-This nonblocking request has a five-second timeout; successful counts are
-cached locally for one hour. On failure, the footer shows only GitHub, without
-a count. No API keys are required, but GitHub rate limits these requests.
-Visitors' browsers contact GitHub directly, exposing their IP addresses to
-GitHub. No backend endpoint or additional package is needed.
-Old `site.footerText` and `site.footerLinks` keys are ignored without requiring
-configuration migration.
+The fixed footer displays a single, subtle **GitHub** text link to
+https://github.com/pxgo/bun-fm; it does not show the repository's star count.
+The page does not request GitHub's API. GitHub receives a visitor's request only
+when they follow the project link. Old `site.footerText` and `site.footerLinks`
+keys are ignored without requiring configuration migration.
 
 The remaining homepage content is configurable (text is plain text, not HTML):
 
@@ -209,6 +204,34 @@ Public endpoints: `/api/site` (only homepage settings plus `streamUrl`),
 (JPEG for the current track, otherwise 404). Keep these and `/stream` reachable
 through your reverse proxy; disable response buffering and allow long-lived
 connections on `/stream`.
+
+### Installable player (PWA)
+
+Open the listening page over HTTPS and use the browser's install menu to add
+BunFM to your desktop or home screen. On iPhone/iPad, use Safari's Share menu
+and select **Add to Home Screen**. The installed player opens in a standalone
+window; no in-page install button is added. Installation options depend on the
+browser and platform. Local development works over HTTP on `localhost` or
+`127.0.0.1`; plain HTTP on a LAN address is not a secure context.
+
+After the first successful online visit and Service Worker installation, the
+player page and bundled static assets can open offline. Live audio, station
+settings, track metadata, dynamic cover images and external requests are never
+cached by the Service Worker. Listening still requires a connection; offline
+startup uses the default page content and existing connection/retry notices.
+
+The manifest (`public/manifest.webmanifest`) supplies the installed app name
+and icons independently of `site.title`. The PNG icons are derived from
+`public/icon.jpg`; regenerate them when changing the installed app's artwork.
+No extra dependencies or configuration keys are required.
+
+The Service Worker uses a versioned, bounded cache of the player assets.
+Increment the cache version in `public/sw.js` whenever a cached file changes.
+Updates install in the background and activate after all existing player tabs
+and installed app windows close, without interrupting current playback. Reopen
+the player to use the new version. Serve `/sw.js` without a long-lived proxy
+cache, and keep it, `/manifest.webmanifest` and the listed assets accessible at
+the origin root. Deploy the complete asset set before publishing the new worker.
 
 ### AI radio transitions
 

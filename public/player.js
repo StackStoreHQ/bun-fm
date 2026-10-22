@@ -29,7 +29,6 @@
   let siteTimer = 0;
   let metadataTimer = 0;
   const requests = new Set();
-  let starsLoaded = false;
 
   try {
     painter = canvas.getContext("2d");
@@ -59,66 +58,6 @@
     }
   }
 
-  function alignFooter() {
-    const artwork = document.querySelector(".artwork").getBoundingClientRect();
-    const shell = document.querySelector(".shell").getBoundingClientRect();
-    document.querySelector(".site-footer").style.paddingInlineStart =
-      Math.max(0, artwork.left - shell.left) + "px";
-  }
-
-  function renderGitHubStars(count) {
-    const exact = new Intl.NumberFormat("en").format(count);
-    const compact = new Intl.NumberFormat("en", {
-      notation: "compact", maximumFractionDigits: 1,
-    }).format(count);
-    const label = "BunFM on GitHub, " + exact + " stars";
-    get("github-stars").textContent = "· " + compact + " stars";
-    get("github-stars").dataset.loaded = "true";
-    get("github-link").setAttribute("aria-label", label);
-    get("github-link").title = label;
-    starsLoaded = true;
-  }
-
-  async function loadGitHubStars() {
-    const cacheKey = "bunfm.github-stars:pxgo/bun-fm";
-    try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey));
-      if (cached && Number.isSafeInteger(cached.count) && cached.count >= 0 &&
-          Number.isFinite(cached.at) && cached.at <= Date.now() &&
-          Date.now() - cached.at < 60 * 60 * 1000) {
-        renderGitHubStars(cached.count);
-        return;
-      }
-    } catch {
-      // Storage may be disabled; the optional request still works without it.
-    }
-    const controller = new AbortController();
-    requests.add(controller);
-    const timer = window.setTimeout(() => controller.abort(), 5000);
-    try {
-      const response = await fetch("https://api.github.com/repos/pxgo/bun-fm", {
-        signal: controller.signal,
-        credentials: "omit",
-        referrerPolicy: "no-referrer",
-        headers: { Accept: "application/vnd.github+json" },
-      });
-      if (!response.ok) return;
-      const data = await response.json();
-      const count = data && data.stargazers_count;
-      if (leaving || !Number.isSafeInteger(count) || count < 0) return;
-      renderGitHubStars(count);
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify({ count, at: Date.now() }));
-      } catch {
-        // A blocked/full cache must never affect playback or the GitHub link.
-      }
-    } catch {
-      // Offline, rate limited or timed out: keep the static GitHub link only.
-    } finally {
-      window.clearTimeout(timer);
-      requests.delete(controller);
-    }
-  }
 
   function renderText(id, text) {
     const element = get(id);
@@ -576,21 +515,12 @@
     if (!event.persisted) return;
     leaving = false;
     if (!site) loadSite();
-    if (!starsLoaded) loadGitHubStars();
-    alignFooter();
     pollMetadata();
   });
 
-  if (window.ResizeObserver) {
-    const footerObserver = new ResizeObserver(alignFooter);
-    footerObserver.observe(document.querySelector(".artwork"));
-    footerObserver.observe(document.querySelector(".shell"));
-  }
-  window.addEventListener("resize", alignFooter);
-  alignFooter();
+
   renderPlayback();
   renderCover(null);
   loadSite();
   pollMetadata();
-  loadGitHubStars();
 })();

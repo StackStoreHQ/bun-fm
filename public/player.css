@@ -278,35 +278,25 @@ main {
 .site-footer {
   display: flex;
   align-items: center;
+  justify-content: center;
   min-width: 0;
   height: 44px;
-  color: var(--muted);
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .site-footer a {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   padding-block: 10px;
+  color: #808080;
   white-space: nowrap;
   text-decoration: none;
 }
 
 .site-footer a:hover,
 .site-footer a:focus-visible {
-  color: var(--text);
+  color: var(--muted);
   text-decoration: underline;
-}
-
-#github-stars {
-  width: 15ch;
-  visibility: hidden;
-  font-variant-numeric: tabular-nums;
-}
-
-#github-stars[data-loaded="true"] {
-  visibility: visible;
 }
 
 @media (max-width: 1000px) {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service>
+  <!--
+    Deployment template for WinSW v3.
+    Copy this file next to the WinSW executable, rename both to the same
+    service name (for example, BunFM.xml and BunFM.exe), then update the
+    paths below for the machine where BunFM is installed.
+  -->
+  <id>BunFM</id>
+  <name>BunFM</name>
+  <description>BunFM audio streaming server</description>
+
+  <!-- Update if Node.js is installed in a different C: drive location. -->
+  <executable>C:\Program Files\nodejs\node.exe</executable>
+  <arguments>dist\index.js</arguments>
+
+  <!-- Replace with the directory containing config.yaml, dist, and media. -->
+  <workingdirectory>C:\Apps\BunFM</workingdirectory>
+
+  <env name="NODE_ENV" value="production" />
+
+  <!-- Run as a Windows service without showing a console window. -->
+  <hidewindow>true</hidewindow>
+  <startmode>Automatic</startmode>
+
+  <!-- Restart the service process after failure, waiting five seconds. -->
+  <onfailure action="restart" delay="5 sec" />
+  <resetfailure>1 hour</resetfailure>
+
+  <logpath>%BASE%\logs</logpath>
+  <log mode="roll" />
+</service>
