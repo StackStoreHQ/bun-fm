@@ -39,6 +39,10 @@ npm install && npm run build
 npm start
 ```
 
+Run `npm run doctor` to test connectivity for configured LLM, TTS, and Telegram
+services. Unconfigured services are skipped. LLM and TTS checks make real API
+requests, so providers may charge for them; failures return a non-zero exit code.
+
 BunFM exits on startup when `config.yaml` is missing.
 
 Open the listening page at `http://127.0.0.1:7080/`.

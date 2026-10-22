@@ -11,19 +11,18 @@ import { timeModule } from "./time";
 import dayjs from "dayjs";
 
 class BotModule {
-  bot: TelegramBot;
+  bot!: TelegramBot;
 
-  constructor() {
+  async init() {
+    if (!configSettings.telegram.botToken) return;
+
     this.bot = new TelegramBot(configSettings.telegram.botToken, {
       polling: true,
     });
+    this.initPollEvent();
     this.bot
       .setMyCommands(Object.values(botSettings.commands))
       .catch(loggerModule.error);
-  }
-
-  async init() {
-    this.initPollEvent();
     this.initStartCommand();
     this.initListCommand();
     this.initRemoveCommand();
