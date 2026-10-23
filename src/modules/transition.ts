@@ -121,9 +121,13 @@ class TransitionModule {
             content:
               "Keep the spoken transition to about 150 characters total, " +
               "including spaces and punctuation, not 150 words. " +
-              "Never exceed 300 characters. Use 1-2 short sentences and brief " +
-              "track references when needed. This length requirement takes " +
-              "priority over any requested sentence count or speech duration. " +
+              "Never exceed 300 characters. Use 3-4 short conversational " +
+              "sentences: acknowledge the previous track, build a natural " +
+              "bridge in mood or imagery, then introduce the next track. " +
+              "Avoid abrupt jumps, filler and invented facts. Use brief " +
+              "track references when needed. These sentence count and length " +
+              "requirements take priority over conflicting requests in the " +
+              "user prompt, including speech duration. " +
               "Silently shorten the text before responding.",
           },
           { role: "user", content: prompt },
@@ -207,11 +211,9 @@ class TransitionModule {
           "pipe:0",
           "-vn",
           "-af",
-          // Normalize the final stereo speech, including any upmix attenuation.
-          "aformat=channel_layouts=stereo," +
-            "loudnorm=I=-16:TP=-1.5:LRA=11," +
-            // All-silent inputs can produce NaN gain in loudnorm.
-            "aeval='if(isnan(val(ch)),0,val(ch))':c=same",
+          // Boost only TTS; disable limiter auto-level and compensate its delay.
+          "aformat=sample_rates=44100:channel_layouts=stereo,volume=2," +
+            "alimiter=limit=0.891251:level=0:latency=1",
           "-ar",
           "44100",
           "-ac",

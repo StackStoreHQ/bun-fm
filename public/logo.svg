@@ -1,15 +1,213 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 0 200 200" width="512" height="512" role="img" aria-labelledby="title">
-  <title id="title">BunFM solid radio - warm white and champagne</title>
-  <path fill="#FCFAF5" d="M152 54L182.5 23.5A3.5 3.5 0 0 1 187.5 28.5L157 59Z" />
-  <path fill="#FCFAF5" fill-rule="evenodd" d="M43 120C43 78 77 47 120 47C163 47 197 78 197 120C197 153 169 170 120 170C71 170 43 153 43 120Z M80 84H160Q167 84 167 91V99Q167 106 160 106H80Q73 106 73 99V91Q73 84 80 84Z M75 116H115A3 3 0 0 1 115 122H75A3 3 0 0 1 75 116Z M73 128H117A3 3 0 0 1 117 134H73A3 3 0 0 1 73 128Z M78 140H112A3 3 0 0 1 112 146H78A3 3 0 0 1 78 140Z" />
-  <g fill="#FCFAF5">
-    <rect x="90" y="90" width="3" height="10" rx="1.5" />
-    <rect x="107" y="90" width="3" height="10" rx="1.5" />
-    <rect x="149" y="90" width="3" height="10" rx="1.5" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -40 640 640" width="512" height="512" role="img" aria-label="奶油瓷 · 香槟拟物包子收音机">
+<defs>
+    <radialGradient id="bunfm-cream-shell" cx="32%" cy="18%" r="85%">
+<stop stop-color="#fffefa"/>
+<stop offset=".45" stop-color="#f7f2e7"/>
+<stop offset=".77" stop-color="#e5dfd1"/>
+<stop offset="1" stop-color="#c9c1af"/>
+</radialGradient>
+    <linearGradient id="bunfm-cream-side" x1="0" y1="0" x2=".8" y2="1">
+<stop stop-color="#e5ddcb"/>
+<stop offset=".6" stop-color="#c1b7a1"/>
+<stop offset="1" stop-color="#938a76"/>
+</linearGradient>
+    <linearGradient id="bunfm-cream-metal" x1="0" y1="0" x2=".9" y2="1">
+<stop stop-color="#e9ddbd"/>
+<stop offset=".22" stop-color="#fffdf3"/>
+<stop offset=".47" stop-color="#bba373"/>
+<stop offset=".72" stop-color="#e9ddbd"/>
+<stop offset="1" stop-color="#87764e"/>
+</linearGradient>
+    <linearGradient id="bunfm-cream-steel">
+<stop stop-color="#7d807b"/>
+<stop offset=".25" stop-color="#e0e2da"/>
+<stop offset=".48" stop-color="#fffef6"/>
+<stop offset=".7" stop-color="#b3b6ac"/>
+<stop offset="1" stop-color="#70756d"/>
+</linearGradient>
+    <radialGradient id="bunfm-cream-dial" cx="30%" cy="24%" r="80%">
+<stop stop-color="#fffdf4"/>
+<stop offset=".34" stop-color="#e9ddbd"/>
+<stop offset=".8" stop-color="#bba373"/>
+<stop offset="1" stop-color="#87764e"/>
+</radialGradient>
+    <radialGradient id="bunfm-cream-mesh" cx="35%" cy="20%" r="85%">
+<stop stop-color="#e4dfcf"/>
+<stop offset=".35" stop-color="#b7b09b"/>
+<stop offset="1" stop-color="#87764e"/>
+</radialGradient>
+    <linearGradient id="bunfm-cream-recess" x2=".2" y2="1">
+<stop stop-color="#645e4e"/>
+<stop offset=".35" stop-color="#a59c86"/>
+<stop offset="1" stop-color="#f8f3e5"/>
+</linearGradient>
+    <linearGradient id="bunfm-cream-glass" x2="0" y2="1">
+<stop stop-color="#283c35"/>
+<stop offset=".48" stop-color="#4e6053"/>
+<stop offset="1" stop-color="#829181"/>
+</linearGradient>
+    <linearGradient id="bunfm-cream-reflection" x1="0" y1="0" x2=".7" y2="1">
+<stop stop-color="#fff" stop-opacity=".46"/>
+<stop offset=".5" stop-color="#fff" stop-opacity=".08"/>
+<stop offset="1" stop-color="#fff" stop-opacity="0"/>
+</linearGradient>
+    <linearGradient id="bunfm-cream-wood" x2="0" y2="1">
+<stop stop-color="#cfb18a"/>
+<stop offset=".28" stop-color="#b18a60"/>
+<stop offset=".78" stop-color="#8b6641"/>
+<stop offset="1" stop-color="#705237"/>
+</linearGradient>
+    <pattern id="bunfm-cream-holes" width="8" height="7" patternUnits="userSpaceOnUse">
+<circle cx="2.5" cy="3.3" r="1.35" fill="#fff8df" opacity=".45"/>
+<circle cx="2.5" cy="2.5" r="1.3" fill="#3b3d34" opacity=".7"/>
+<circle cx="6.5" cy="6.7" r="1.2" fill="#3b3d34" opacity=".65"/>
+</pattern>
+    <pattern id="bunfm-cream-cloth" width="5" height="5" patternUnits="userSpaceOnUse">
+<path d="M0 1H5M1 0V5" stroke="#fff6dc" stroke-width="1" opacity=".4"/>
+<path d="M0 3H5M3 0V5" stroke="#5e5845" stroke-width=".8" opacity=".33"/>
+</pattern>
+    <pattern id="bunfm-cream-grain" width="24" height="24" patternUnits="userSpaceOnUse">
+<circle cx="3" cy="7" r=".6" fill="#a99b7f"/>
+<circle cx="18" cy="4" r=".45" fill="#fff"/>
+<circle cx="12" cy="19" r=".5" fill="#a99b7f"/>
+<circle cx="22" cy="14" r=".6" fill="#fff"/>
+</pattern>
+    <filter id="bunfm-cream-shadow" x="-40%" y="-40%" width="180%" height="190%">
+<feGaussianBlur stdDeviation="9"/>
+</filter>
+    <filter id="bunfm-cream-soft" x="-30%" y="-30%" width="160%" height="160%">
+<feGaussianBlur stdDeviation="2.3"/>
+</filter>
+    <filter id="bunfm-cream-drop" x="-40%" y="-40%" width="180%" height="190%">
+<feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#4e4634" flood-opacity=".24"/>
+</filter>
+    <clipPath id="bunfm-cream-body-clip">
+<path d="M104 361C99 263 181 166 300 153C315 149 324 149 338 153C454 164 533 256 536 355C541 434 468 474 322 476C178 477 109 439 104 361Z"/>
+</clipPath>
+  </defs>
+<ellipse cx="326" cy="487" rx="177" ry="13" fill="#514939" opacity=".15" filter="url(#bunfm-cream-shadow)"/>
+<rect x="182" y="453" width="46" height="28" rx="11" fill="url(#bunfm-cream-side)"/>
+<rect x="416" y="453" width="46" height="28" rx="11" fill="url(#bunfm-cream-side)"/>
+<g transform="rotate(31 455 215)">
+<rect x="444" y="184" width="20" height="35" rx="8" fill="url(#bunfm-cream-side)"/>
+<rect x="449" y="63" width="8" height="139" rx="4" fill="url(#bunfm-cream-steel)"/>
+<rect x="451" y="68" width="1.7" height="123" rx=".8" fill="#fff" opacity=".7"/>
+<rect x="447" y="62" width="12" height="9" rx="4" fill="url(#bunfm-cream-steel)"/>
+<rect x="448" y="183" width="10" height="5" rx="1.5" fill="#77796b"/>
+</g>
+<path d="M104 361C99 263 181 166 300 153C315 149 324 149 338 153C454 164 533 256 536 355C541 434 468 474 322 476C178 477 109 439 104 361Z" transform="translate(8 9)" fill="url(#bunfm-cream-side)"/>
+<path d="M104 361C99 263 181 166 300 153C315 149 324 149 338 153C454 164 533 256 536 355C541 434 468 474 322 476C178 477 109 439 104 361Z" fill="url(#bunfm-cream-shell)"/>
+<g clip-path="url(#bunfm-cream-body-clip)">
+    <path d="M304 153C253 169 209 201 187 250C211 221 254 202 304 191C313 181 316 165 319 151Z" fill="#fffdf4" opacity=".49"/>
+    <path d="M315 153C277 176 252 202 244 226C261 207 287 193 313 187C318 176 319 164 319 153Z" fill="#c1b79f" opacity=".22" filter="url(#bunfm-cream-soft)"/>
+    <path d="M324 153C350 168 378 192 391 228C385 196 367 171 339 154Z" fill="#b6aa90" opacity=".2" filter="url(#bunfm-cream-soft)"/>
+    <path d="M331 153C371 163 419 199 441 240C420 215 379 191 342 185Z" fill="#fffefa" opacity=".46"/>
+
   </g>
-  <g fill="#D0BF97">
-    <rect x="130" y="88" width="4" height="14" rx="2" />
-    <circle cx="151" cy="131" r="16" />
-  </g>
-  <rect x="149" y="120" width="4" height="12" rx="2" transform="rotate(45 151 131)" fill="#FCFAF5" />
+<path d="M104 361C99 263 181 166 300 153C315 149 324 149 338 153C454 164 533 256 536 355C541 434 468 474 322 476C178 477 109 439 104 361Z" fill="url(#bunfm-cream-grain)" opacity=".16"/>
+<path d="M128 375C132 420 196 447 313 449C421 451 491 429 516 390C501 444 433 465 320 466C204 465 145 439 128 405Z" fill="#fffdf5" opacity=".24"/>
+<path d="M147 300C166 232 216 193 271 177" fill="none" stroke="#fffef9" stroke-width="8" stroke-linecap="round" opacity=".26" filter="url(#bunfm-cream-soft)"/>
+<g filter="url(#bunfm-cream-drop)">
+<rect x="202" y="246" width="234" height="39" rx="12" fill="url(#bunfm-cream-recess)"/>
+<rect x="205" y="249" width="228" height="33" rx="9" fill="url(#bunfm-cream-metal)"/>
+<rect x="209" y="253" width="220" height="25" rx="6" fill="url(#bunfm-cream-glass)"/>
+<path d="M221 260v9" stroke="#eee5c8" stroke-width="1.3" opacity=".8"/>
+<path d="M228 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M235 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M242 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M249 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M256 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M263 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M270 260v9" stroke="#eee5c8" stroke-width="1.3" opacity=".8"/>
+<path d="M277 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M284 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M291 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M298 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M305 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M312 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M319 260v9" stroke="#eee5c8" stroke-width="1.3" opacity=".8"/>
+<path d="M326 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M333 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M340 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M347 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M354 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M361 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M368 260v9" stroke="#eee5c8" stroke-width="1.3" opacity=".8"/>
+<path d="M375 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M382 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M389 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M396 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M403 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M410 260v4" stroke="#eee5c8" stroke-width="0.75" opacity=".8"/>
+<path d="M417 260v9" stroke="#eee5c8" stroke-width="1.3" opacity=".8"/>
+<g fill="#e4debd" font-family="Georgia, serif" font-size="6.5">
+<text x="220" y="275">88</text>
+<text x="309.96000000000004" y="275">96</text>
+<text x="402" y="275">104</text>
+</g>
+<rect x="346.12" y="256" width="2.7" height="19" rx="1" fill="#e9ddbd"/>
+<path d="M210 254h218v9L210 269Z" fill="url(#bunfm-cream-reflection)"/>
+</g>
+<g transform="translate(242 365)">
+<circle r="78" cy="2" fill="url(#bunfm-cream-recess)"/>
+<circle r="75" fill="url(#bunfm-cream-metal)"/>
+<circle r="70" fill="#5e5d4e"/>
+<circle r="68" cy="1" fill="url(#bunfm-cream-mesh)"/>
+<circle r="68" cy="1" fill="url(#bunfm-cream-holes)"/>
+<path d="M-70 0A70 70 0 0 1 70 0" fill="none" stroke="#fffef1" stroke-width="1.5" opacity=".65"/>
+</g>
+<g transform="translate(417 367)">
+<circle r="39" cy="2" fill="#958d7a" opacity=".25" filter="url(#bunfm-cream-soft)"/>
+<circle r="38" fill="url(#bunfm-cream-recess)"/>
+<circle r="35" fill="url(#bunfm-cream-metal)" filter="url(#bunfm-cream-drop)"/>
+<path d="M0 -32v3" transform="rotate(0)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(9)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(18)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(27)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(36)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(45)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(54)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(63)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(72)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(81)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(90)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(99)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(108)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(117)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(126)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(135)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(144)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(153)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(162)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(171)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(180)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(189)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(198)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(207)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(216)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(225)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(234)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(243)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(252)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(261)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(270)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(279)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(288)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(297)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(306)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(315)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(324)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(333)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(342)" stroke="#fff7df" stroke-width="1" opacity=".6"/>
+<path d="M0 -32v3" transform="rotate(351)" stroke="#87764e" stroke-width="1" opacity=".6"/>
+<circle r="30" cy="-1" fill="url(#bunfm-cream-dial)"/>
+<circle r="27" cy="-1.6" fill="none" stroke="#fffdf3" stroke-width=".8" opacity=".5"/>
+<g transform="rotate(35)">
+<rect x="-1.8" y="-26" width="3.6" height="14" rx="1.8" fill="#87764e"/>
+<rect x="-1.3" y="-26" width="1" height="14" rx=".5" fill="#fffdf5" opacity=".8"/>
+</g>
+</g>
+<circle cx="417" cy="311" r="5" fill="url(#bunfm-cream-recess)"/>
+<circle cx="417" cy="311" r="3.2" fill="#91ab86"/>
+<circle cx="416" cy="310" r="1.1" fill="#d8edc9"/>
 </svg>

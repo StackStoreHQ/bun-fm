@@ -31,6 +31,7 @@ class FMModule extends EventEmitter<IEvents> {
   muted: boolean = false;
   readerTask: ChildProcess | null = null;
   private playbackVersion = 0;
+  private lastMediaPath: string | null = null;
   from: "file" | "muteAudio" = "muteAudio";
   audioBufferCache: Buffer = Buffer.allocUnsafe(
     configSettings.server.bufferSize,
@@ -113,6 +114,13 @@ class FMModule extends EventEmitter<IEvents> {
           let index = medias.findIndex(
             (media) => media.filePath === planned.media.filePath,
           );
+          if (
+            configSettings.playback.random &&
+            medias.length > 1 &&
+            planned.media.filePath === this.lastMediaPath
+          ) {
+            index = -1;
+          }
           if (index < 0) {
             incoming?.dispose();
             incoming = null;
@@ -140,6 +148,7 @@ class FMModule extends EventEmitter<IEvents> {
         }
         if (version !== this.playbackVersion) continue;
 
+        this.lastMediaPath = mediaInfo.filePath;
         queued = await this.prepareNextMedia(mediaInfo);
         if (version !== this.playbackVersion) {
           queued?.preparation.dispose();
@@ -181,7 +190,7 @@ class FMModule extends EventEmitter<IEvents> {
         (media) => media.filePath === current.filePath,
       );
       const nextIndex = configSettings.playback.random
-        ? Math.floor(Math.random() * medias.length)
+        ? this.getRandomMediaIndex(medias.length, currentIndex)
         : currentIndex >= 0
           ? (currentIndex + 1) % medias.length
           : Math.max(0, this.currentMediaIndex) % medias.length;
@@ -236,10 +245,21 @@ class FMModule extends EventEmitter<IEvents> {
     }
   }
 
-  resetMediaIndex(mediaCount: number) {
+  private getRandomMediaIndex(mediaCount: number, excludedIndex: number) {
+    if (mediaCount <= 1 || excludedIndex < 0 || excludedIndex >= mediaCount) {
+      return Math.floor(Math.random() * mediaCount);
+    }
+    const index = Math.floor(Math.random() * (mediaCount - 1));
+    return index >= excludedIndex ? index + 1 : index;
+  }
+
+  resetMediaIndex(
+    mediaCount: number,
+    excludedIndex: number = this.currentMediaIndex,
+  ) {
     let nextMediaIndex: number;
     if (configSettings.playback.random) {
-      nextMediaIndex = Math.floor(Math.random() * mediaCount);
+      nextMediaIndex = this.getRandomMediaIndex(mediaCount, excludedIndex);
     } else {
       if (this.currentMediaIndex + 1 >= mediaCount) {
         nextMediaIndex = 0;
@@ -252,7 +272,10 @@ class FMModule extends EventEmitter<IEvents> {
 
   async getNextMediaInfo() {
     const medias = await mediaModule.getMediasInfo();
-    this.resetMediaIndex(medias.length);
+    const previousIndex = medias.findIndex(
+      (media) => media.filePath === this.lastMediaPath,
+    );
+    this.resetMediaIndex(medias.length, previousIndex);
     return medias[this.currentMediaIndex] || null;
   }
 

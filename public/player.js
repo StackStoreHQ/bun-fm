@@ -233,6 +233,7 @@
         cover.hidden = false;
         background.hidden = false;
         coverIsTrack = isTrackCover;
+        document.body.dataset.artwork = isTrackCover ? "track" : "station";
       };
       image.onerror = tryNext;
       image.src = url;

@@ -106,7 +106,7 @@ h2 {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  background: var(--ground);
+  background: #625e55;
 }
 
 .atmosphere img {
@@ -116,6 +116,14 @@ h2 {
   filter: blur(80px) brightness(0.72) saturate(1.2);
   transform: scale(1.25);
   opacity: 0.9;
+}
+
+body[data-artwork="station"] {
+  --muted: #e0dcd3;
+}
+
+body[data-artwork="station"] .atmosphere img {
+  filter: blur(80px) brightness(0.4) saturate(0.65);
 }
 
 .shell {
@@ -297,7 +305,7 @@ main {
   width: min(100%, 440px, 55vh);
   width: min(100%, 440px, 55dvh);
   overflow: hidden;
-  background: var(--surface);
+  background: #eeece6;
 }
 
 .artwork img {
