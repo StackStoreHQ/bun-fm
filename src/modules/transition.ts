@@ -206,6 +206,12 @@ class TransitionModule {
           "-i",
           "pipe:0",
           "-vn",
+          "-af",
+          // Normalize the final stereo speech, including any upmix attenuation.
+          "aformat=channel_layouts=stereo," +
+            "loudnorm=I=-16:TP=-1.5:LRA=11," +
+            // All-silent inputs can produce NaN gain in loudnorm.
+            "aeval='if(isnan(val(ch)),0,val(ch))':c=same",
           "-ar",
           "44100",
           "-ac",

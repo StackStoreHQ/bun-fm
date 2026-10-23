@@ -14,6 +14,10 @@
   let metadataKey = "";
   let coverKey = "";
   let coverVersion = 0;
+  let coverTrackId = null;
+  let coverTimer = 0;
+  let coverGraceExpired = false;
+  let coverIsTrack = false;
   let muted = false;
   let wanted = false;
   let phase = "paused";
@@ -178,38 +182,60 @@
   }
 
   function renderCover(track) {
+    const trackId = track ? track.id : null;
+    if (trackId !== coverTrackId) {
+      coverTrackId = trackId;
+      window.clearTimeout(coverTimer);
+      coverTimer = 0;
+      coverGraceExpired = false;
+      coverKey = "";
+      ++coverVersion;
+    }
+    const trackCover = safeUrl(track && track.coverUrl);
+    if (!trackCover && coverIsTrack && !coverGraceExpired) {
+      if (!coverTimer) {
+        coverKey = "";
+        ++coverVersion;
+        // Allow 10s for extraction plus a 3s metadata poll before falling back.
+        coverTimer = window.setTimeout(() => {
+          coverTimer = 0;
+          coverGraceExpired = true;
+          renderCover(latestMetadata && latestMetadata.track);
+        }, 15000);
+      }
+      return;
+    }
+    window.clearTimeout(coverTimer);
+    coverTimer = 0;
     const candidates = [...new Set([
-      track && track.coverUrl,
+      trackCover,
       site && site.defaultCover,
       "/icon.jpg",
     ].map(safeUrl).filter(Boolean))];
-    const key = JSON.stringify(candidates);
+    const trackAlt = track &&
+      "Cover artwork for " + (track.album || track.title || "the current track");
+    const key = JSON.stringify([trackId, trackAlt, candidates]);
     if (key === coverKey) return;
     coverKey = key;
     const version = ++coverVersion;
     let index = 0;
     const tryNext = () => {
-      if (version !== coverVersion) return;
-      if (index >= candidates.length) {
-        cover.hidden = true;
-        background.hidden = true;
-        return;
-      }
+      if (leaving || version !== coverVersion) return;
+      if (index >= candidates.length) return;
       const url = candidates[index++];
-      const isTrackCover = track && url === safeUrl(track.coverUrl);
-      cover.alt = isTrackCover ?
-        "Cover artwork for " + (track.album || track.title || "the current track") :
-        "Station artwork";
-      cover.hidden = true;
-      cover.onload = () => {
-        if (version !== coverVersion) return;
+      const isTrackCover = url === trackCover;
+      const image = new Image();
+      image.onload = () => {
+        if (leaving || version !== coverVersion) return;
+        cover.src = url;
+        cover.alt = isTrackCover ? trackAlt : "Station artwork";
+        background.src = url;
         cover.hidden = false;
         background.hidden = false;
-        background.onerror = () => { background.hidden = true; };
-        background.src = url;
+        coverIsTrack = isTrackCover;
       };
-      cover.onerror = tryNext;
-      cover.src = url;
+      image.onerror = tryNext;
+      image.src = url;
     };
     tryNext();
   }
@@ -691,6 +717,10 @@
     window.clearTimeout(metadataTimer);
     window.clearTimeout(statsTimer);
     window.clearTimeout(shareTimer);
+    window.clearTimeout(coverTimer);
+    coverTimer = 0;
+    coverKey = "";
+    ++coverVersion;
     for (const request of requests) request.abort();
     pausePlayback();
   });
@@ -698,6 +728,7 @@
     if (!event.persisted) return;
     leaving = false;
     if (!site) loadSite();
+    renderCover(latestMetadata && latestMetadata.track);
     pollMetadata();
     pollStats();
   });

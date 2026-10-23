@@ -2,7 +2,7 @@
 
 // Bump this version whenever a cached player asset changes.
 const CACHE_PREFIX = "bunfm-shell-";
-const CACHE_NAME = CACHE_PREFIX + "v12";
+const CACHE_NAME = CACHE_PREFIX + "v13";
 const SHELL_ASSETS = [
   "/",
   "/player.css",
