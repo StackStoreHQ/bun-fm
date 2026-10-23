@@ -115,7 +115,19 @@ class TransitionModule {
       {
         reasoning_effort: llm.thinking,
         model: llm.model,
-        messages: [{ role: "user", content: prompt }],
+        messages: [
+          {
+            role: "system",
+            content:
+              "Keep the spoken transition to about 150 characters total, " +
+              "including spaces and punctuation, not 150 words. " +
+              "Never exceed 300 characters. Use 1-2 short sentences and brief " +
+              "track references when needed. This length requirement takes " +
+              "priority over any requested sentence count or speech duration. " +
+              "Silently shorten the text before responding.",
+          },
+          { role: "user", content: prompt },
+        ],
         // Reasoning models share this budget with the final spoken text.
         max_tokens: 2048,
       },
@@ -130,8 +142,8 @@ class TransitionModule {
     if (typeof text !== "string" || !text.trim()) {
       throw new Error("LLM returned no transition text");
     }
-    if (Array.from(text.trim()).length > 180) {
-      throw new Error("LLM transition text exceeded the 180-character limit");
+    if (Array.from(text.trim()).length > 300) {
+      throw new Error("LLM transition text exceeded the 300-character limit");
     }
     return text.trim();
   }

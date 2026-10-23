@@ -77,6 +77,9 @@ to its URL, such as `/cover.jpg`.
 including their API keys. Providers must support `/chat/completions` and
 `/audio/speech`. Prompts use `{A}` and `{B}` for track names. Track names and
 speech text are sent to the providers, which may charge for requests.
+Transitions target about 150 characters total, including spaces and punctuation,
+not 150 words. A system instruction applies this target even to custom prompts;
+text over 300 characters is rejected and that transition is skipped before TTS.
 
 **Thinking mode:** set `llm.thinking` to `none` (default, no reasoning),
 `minimal`, `low`, `medium`, `high` or `xhigh`. The aliases `no`, `media` and

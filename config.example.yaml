@@ -63,8 +63,10 @@ transition:
     Use only English words, basic Latin letters and standard ASCII punctuation
     so the entire output is suitable for English-only text-to-speech.
     Include both tracks using their English titles or references above,
-    in 2-3 conversational sentences (roughly 15-25 seconds of speech).
-    Before responding, silently check and rewrite any non-English content.
+    in 1-2 short conversational sentences totaling about 150 characters,
+    including spaces and punctuation, not 150 words. Never exceed 300 characters.
+    Use brief track references if full titles would make the text too long.
+    Before responding, silently shorten the text and rewrite non-English content.
     No headings, markdown, stage directions or explanations.
 
 telegram:
