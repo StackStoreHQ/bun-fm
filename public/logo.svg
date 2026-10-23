@@ -1,12 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 0 200 200" width="512" height="512" role="img" aria-labelledby="title">
-  <title id="title">BunFM round-bread radio</title>
-  <rect x="20" y="0" width="200" height="200" fill="#202620" />
-  <g fill="none" stroke="#f1d34f" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M43 120C43 78 77 47 120 47C163 47 197 78 197 120C197 153 169 170 120 170C71 170 43 153 43 120Z" stroke-width="7" />
-    <path d="M155 56L185 26" stroke-width="5" />
-    <rect x="76" y="86" width="89" height="16" rx="4" stroke-width="5" />
-    <path d="M91 90V97M108 90V97M132 89V99M150 90V97M73 116H117M71 128H119M76 140H114" stroke-width="4" />
-    <circle cx="150" cy="127" r="15" stroke-width="5" />
-    <path d="M150 127L156 121" stroke-width="4" />
+  <title id="title">BunFM solid radio - warm white and champagne</title>
+  <path fill="#FCFAF5" d="M152 54L182.5 23.5A3.5 3.5 0 0 1 187.5 28.5L157 59Z" />
+  <path fill="#FCFAF5" fill-rule="evenodd" d="M43 120C43 78 77 47 120 47C163 47 197 78 197 120C197 153 169 170 120 170C71 170 43 153 43 120Z M80 84H160Q167 84 167 91V99Q167 106 160 106H80Q73 106 73 99V91Q73 84 80 84Z M75 116H115A3 3 0 0 1 115 122H75A3 3 0 0 1 75 116Z M73 128H117A3 3 0 0 1 117 134H73A3 3 0 0 1 73 128Z M78 140H112A3 3 0 0 1 112 146H78A3 3 0 0 1 78 140Z" />
+  <g fill="#FCFAF5">
+    <rect x="90" y="90" width="3" height="10" rx="1.5" />
+    <rect x="107" y="90" width="3" height="10" rx="1.5" />
+    <rect x="149" y="90" width="3" height="10" rx="1.5" />
   </g>
+  <g fill="#D0BF97">
+    <rect x="130" y="88" width="4" height="14" rx="2" />
+    <circle cx="151" cy="131" r="16" />
+  </g>
+  <rect x="149" y="120" width="4" height="12" rx="2" transform="rotate(45 151 131)" fill="#FCFAF5" />
 </svg>

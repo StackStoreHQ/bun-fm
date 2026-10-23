@@ -68,6 +68,7 @@ all options and defaults.
 | `telegram` | Optional bot token |
 | `transition` | Enable AI hosting; speech/music timing, gain, fade and prompt |
 | `llm` / `tts` | OpenAI-compatible provider URLs, models and credentials |
+| `llm.thinking` | Thinking effort: `none` (default), `minimal`, `low`, `medium`, `high` or `xhigh` |
 
 For custom artwork, add an image to `public/` and set `site.defaultCover`
 to its URL, such as `/cover.jpg`.
@@ -76,6 +77,28 @@ to its URL, such as `/cover.jpg`.
 including their API keys. Providers must support `/chat/completions` and
 `/audio/speech`. Prompts use `{A}` and `{B}` for track names. Track names and
 speech text are sent to the providers, which may charge for requests.
+
+**Thinking mode:** set `llm.thinking` to `none` (default, no reasoning),
+`minimal`, `low`, `medium`, `high` or `xhigh`. The aliases `no`, `media` and
+`max` map to `none`, `medium` and `xhigh`, respectively. The display names
+`Low`, `Medium`, `High`, `Extra High` and `Max` are also accepted; `Extra High`
+maps to `xhigh`, just like `Max`. Values are case-insensitive; invalid values
+stop startup with a configuration error.
+
+```yaml
+llm:
+  # Keep your existing baseUrl, model and apiKey settings.
+  thinking: none
+```
+
+BunFM sends the normalized value as OpenAI's `reasoning_effort` field in both
+transition and `npm run doctor` requests. It does not send other providers'
+thinking fields alongside it. Your provider and model must support
+`reasoning_effort` and the chosen value; not every model supports every effort
+or allows reasoning to be disabled. Unsupported options may cause API errors,
+including with non-reasoning models that reject the field. Higher effort can
+increase latency and token usage; the existing output token budget and
+request deadlines still apply.
 
 ## Telegram
 

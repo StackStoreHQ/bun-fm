@@ -113,6 +113,7 @@ class TransitionModule {
       `${llm.baseUrl.replace(/\/+$/, "")}/chat/completions`,
       llm.apiKey,
       {
+        reasoning_effort: llm.thinking,
         model: llm.model,
         messages: [{ role: "user", content: prompt }],
         // Reasoning models share this budget with the final spoken text.

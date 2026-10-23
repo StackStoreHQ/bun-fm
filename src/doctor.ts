@@ -49,6 +49,7 @@ if (configSettings.llm.apiKey) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            reasoning_effort: configSettings.llm.thinking,
             model: configSettings.llm.model,
             messages: [{ role: "user", content: "Reply OK" }],
             // Reasoning models spend some output tokens before producing content.

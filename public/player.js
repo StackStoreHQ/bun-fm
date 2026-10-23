@@ -491,8 +491,9 @@
             bins: new Uint8Array(analyser.frequencyBinCount) };
           context.onstatechange = () => {
             if (graph && graph.context === context) {
-              if (context.state === "closed" ||
-                  (wanted && context.state !== "running")) {
+              // Suspension/interruption is recoverable; keep the graph so
+              // visibilitychange or the next play gesture can resume it.
+              if (context.state === "closed") {
                 disableSpectrum("Spectrum interrupted. Using standard audio playback.");
               } else {
                 updateDrawing();
